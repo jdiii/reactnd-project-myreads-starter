@@ -8,6 +8,7 @@ class Book extends React.Component {
 
 	render(){
 		const {book, shelves} = this.props
+		console.log(book)
 		const options = []
 		shelves.forEach((val, key) => {
 			options.push(<option key={key} value={key}>{val}</option>)
@@ -27,7 +28,7 @@ class Book extends React.Component {
 						</div>
 					</div>
 					<div className="book-title">{book.title}</div>
-					<div className="book-authors">{book.authors[0]}</div>
+					<div className="book-authors">{book.authors ? book.authors[0] : 'None'}</div>
 				</div>
 			</li>
 		)

@@ -28,15 +28,31 @@ class BooksApp extends React.Component {
 	}
 
 	updateBook = (bookToUpdate, shelf) => {
-		this.setState({
-			books: this.state.books.filter(book => {
-				if(book.id == bookToUpdate.id){
-					book.shelf = shelf
-					BooksAPI.update(book, shelf)
-				}
-				return true
+
+		// check if book is already in array
+		if(this.state.books.map(el => el.id).includes(bookToUpdate.id)){
+
+			// if book is in array update its shelf
+			this.setState({
+				books: this.state.books.filter(book => {
+					if(book.id === bookToUpdate.id){
+						book.shelf = shelf
+						BooksAPI.update(book, shelf)
+					}
+					return true
+				})
 			})
-		});
+
+		} else {
+			// if book is not in array add it
+			bookToUpdate.shelf = shelf;
+			BooksAPI.update(bookToUpdate, shelf).then(() => {
+				this.setState((prevState) => {
+					prevState.books.push(bookToUpdate)
+				})
+			})
+
+		}
 	}
 
 	render() {
