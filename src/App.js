@@ -3,12 +3,17 @@ import * as BooksAPI from './BooksAPI'
 import './App.css'
 import SearchBooks from './SearchBooks'
 import BookList from './BookList'
-import { Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
 class BooksApp extends React.Component {
 	state = {
-		books: []
+		books: [],
 	}
+
+	shelves = (new Map())
+				.set('currentlyReading', 'Currently Reading')
+				.set('wantToRead', 'Want to Read')
+				.set('read', 'Read')
 
 	componentDidMount(){
 		this.getBooks()
@@ -22,16 +27,35 @@ class BooksApp extends React.Component {
 		})
 	}
 
+	updateBook = (bookToUpdate, shelf) => {
+		this.setState({
+			books: this.state.books.filter(book => {
+				if(book.id == bookToUpdate.id){
+					book.shelf = shelf
+					BooksAPI.update(book, shelf)
+				}
+				return true
+			})
+		});
+	}
+
 	render() {
+
 		return (
 			<div className="app">
 
 				<Route exact path="/search" render={() => (
-					<SearchBooks />
+						<SearchBooks
+							shelves={this.shelves}
+							update={this.updateBook}
+							books={this.state.books} />
 				)} />
 
 				<Route exact path="/" render={() => (
-					<BookList />
+						<BookList
+							shelves={this.shelves}
+							update={this.updateBook}
+							books={this.state.books} />
 				)} />
 
 			</div>
